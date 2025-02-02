@@ -1,0 +1,22 @@
+/* Divider.css */
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 16px 0;
+    text-align: center;
+    position: relative;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #ccc;
+}
+
+.divider span {
+    margin: 0 8px;
+    color: #999;
+    white-space: nowrap;
+}

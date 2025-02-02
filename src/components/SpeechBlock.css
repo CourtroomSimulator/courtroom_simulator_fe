@@ -1,0 +1,13 @@
+/* SpeechBlock.css */
+
+.speech-block {
+    width: 100%;
+    min-height: 40px;
+    margin: 8px 0;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
