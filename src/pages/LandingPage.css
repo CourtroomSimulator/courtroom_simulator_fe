@@ -1,0 +1,7 @@
+/* ConnectButton 固定在右上角 */
+.connect-button {
+    position: fixed;
+    top: 20px;   /* 根据需要调整间距 */
+    right: 20px;
+    z-index: 1000; /* 确保按钮在最上层 */
+}

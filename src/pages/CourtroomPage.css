@@ -1,0 +1,54 @@
+
+
+.app-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw; /* 确保容器填充整个视口 */
+    max-width: 100%; /* 避免过小 */
+    box-sizing: border-box;
+}
+
+
+.left-panel, .right-panel {
+    width: 120px;
+    border: 1px solid #ccc;
+    overflow-y: auto;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    margin: 0 20px; /* 左右留白 */
+    border: none;
+
+}
+
+.middle-panel {
+    flex: 1;
+    max-width: 800px; /* 防止无限拉伸 */
+    min-width: 400px; /* 确保不会太窄 */
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    border: none;
+}
+
+
+
+/* ConnectButton 固定在右上角 */
+.connect-button {
+    position: fixed;
+    top: 20px;   /* 根据需要调整间距 */
+    right: 20px;
+    z-index: 1000; /* 确保按钮在最上层 */
+}
+
+/* InputBox 居中并固定在页面底部 */
+.input-box-container {
+    position: fixed;
+    bottom: 20px;  /* 根据需要调整底部间距 */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
