@@ -2,7 +2,14 @@
 import {Message} from '../types/message';
 
 export const mockMessages: Message[] = [
-
-    {"id": 101, "role": "judge", "text": "法官发言1"},
-    {"id": 102, "role": "opponent", "text": "对方发言1"}
+    {
+        "user": "judge",
+        "text": "你好！我是JUDGE，我代表真理和正义。",
+        "id": 0
+    },
+    {
+        "user": "opponent",
+        "text": "你好！LAWER，我代表真理和正义。",
+        "id": 1
+    }
 ];

@@ -1,6 +1,6 @@
 // App.tsx
-import React, {useState, useEffect,useRef} from 'react';
-import { useNavigate } from "react-router-dom";
+import React, {useState, useEffect, useRef} from 'react';
+import {useNavigate} from "react-router-dom";
 
 import './CourtroomPage.css';
 
@@ -9,7 +9,7 @@ import {Message} from '../types/message';
 import {Evidence} from '../types/evidence';
 
 // 2. 引入API函数
-import {fetchMessages} from '../api/messageApi';
+import {getAgentMessage} from '../api/messageApi';
 import {fetchEvidences} from '../api/evidenceApi';
 
 import EvidenceItem from '../components/EvidenceItem';
@@ -19,6 +19,7 @@ import InputBox from '../components/InputBox';
 // import { useCurrentAccount} from '@mysten/dapp-kit';
 import {ConnectButton, useWallet} from "@suiet/wallet-kit";
 import {getTokenBalance} from "../sui/getBalance.ts";
+import {mockMessages} from "../mock/messages.ts";
 
 
 const csCoin = '0x8b62526154296b153d8eaff7763af537f2128ab957671c563968fd2d5b44a141::courtroom_simulator_token::COURTROOM_SIMULATOR_TOKEN';
@@ -64,7 +65,7 @@ function CourtroomPage() {
             try {
                 console.log("Loading...");
                 // 1. 获取法官和对方的消息
-                const fetchedMsgs = await fetchMessages();
+                const fetchedMsgs = mockMessages;
                 console.log(fetchedMsgs);
                 // 2. 假设我们想把这些消息放到 messages 中
                 //    如果你想保留“我方”初始化消息，也可以先写死一条我方发言再 concat
@@ -93,16 +94,18 @@ function CourtroomPage() {
         console.log("send message", content);
         const newMsg: Message = {
             id: Date.now(),
-            role: 'mine',
+            user: 'mine',
             text: content,
         };
         setMessages((prev) => [...prev, newMsg]);
 
-        fetchMessages(content)
+        getAgentMessage("judge", content)
             .then((newList) => {
+                // console.log(`response: ${newList.text}`);
+                newList.forEach((msg: Message) => console.log(`Message from ${msg.user}: ${msg.text}`));
                 setMessages(prev => [...prev, ...newList]);
             })
-            .catch((err) => console.error(err));
+            .catch((err) => console.log(err));
 
     };
 
@@ -150,12 +153,12 @@ function CourtroomPage() {
                 {messages.map((msg, index) => (
                     <React.Fragment key={msg.id}>
                         <SpeechBlock
-                            role={msg.role}
+                            role={msg.user}
                             // 根据role传不同颜色
                             color={
-                                msg.role === 'judge'
+                                msg.user === 'judge'
                                     ? '#FF6666'
-                                    : msg.role === 'opponent'
+                                    : msg.user === 'opponent'
                                         ? '#66B0FF'
                                         : '#FFFF88'
                             }

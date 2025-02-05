@@ -41,7 +41,7 @@ function LandingPage() {
     // 在这里调用接口获取按钮文字
     useEffect(() => {
 
-        setButtonText("按钮文字获取失败");
+        setButtonText("米2某诉王3某重婚罪案");
     }, []);
 
     // 点击按钮后，跳转到 /courtroom
