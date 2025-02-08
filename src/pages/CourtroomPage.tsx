@@ -1,5 +1,5 @@
 // App.tsx
-import React, {useState, useEffect, useRef} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import {useNavigate} from "react-router-dom";
 
 import './CourtroomPage.css';
@@ -92,22 +92,71 @@ function CourtroomPage() {
     // 输入框发送“我方”消息
     const handleMyMessageSend = (content: string) => {
         console.log("send message", content);
-        const newMsg: Message = {
+
+        // 1. 添加用户输入的消息到消息列表中
+        const userMsg: Message = {
             id: Date.now(),
-            user: 'mine',
+            user: "mine",
             text: content,
         };
-        setMessages((prev) => [...prev, newMsg]);
+        setMessages((prev) => [...prev, userMsg]);
 
-        getAgentMessage("judge", content)
-            .then((newList) => {
-                // console.log(`response: ${newList.text}`);
-                newList.forEach((msg: Message) => console.log(`Message from ${msg.user}: ${msg.text}`));
-                setMessages(prev => [...prev, ...newList]);
+        // 2. 调用 claimantAttorney 接口，获取其返回的文本
+        getAgentMessage("opponent", content)
+            .then((claimantResponse) => {
+                // 假设 claimantResponse 中包含 text 字段
+                // 将 claimantAttorney 的消息添加到消息列表中
+                const claimantMsg: Message = {
+                    id: Date.now(),
+                    user: "opponent",
+                    text: claimantResponse.text,
+                };
+                setMessages((prev) => [...prev, claimantMsg]);
+
+                // 3. 构造组合 payload 数组：
+                //    - 第一项为 claimantAttorney 的消息（使用返回的文本）
+                //    - 第二项为 defendantAttorney 的消息（使用用户输入的文本）
+                const combinedPayload = [
+                    {
+                        user: "claimantAttorney",
+                        content: {
+                            text: claimantResponse.text,
+                        },
+                    },
+                    {
+                        user: "defendantAttorney",
+                        content: {
+                            text: content,
+                        },
+                    },
+                ];
+
+                // 将数组转换为 JSON 字符串作为 judge 接口的参数
+                const combinedPayloadStr = JSON.stringify(combinedPayload);
+
+                // 4. 调用 judge 接口
+                return getAgentMessage("judge", combinedPayloadStr);
+            })
+            .then((judgeResponse) => {
+                // judgeResponse.text 为 JSON 格式的字符串
+                try {
+                    const parsed = JSON.parse(judgeResponse.text);
+                    // 如果 judge 返回的 JSON 中 answer 字段为 true，则将 judge 的文本添加到消息列表中
+                    if (parsed.answer === true) {
+                        const judgeMsg: Message = {
+                            id: Date.now(),
+                            user: "judge",
+                            text: parsed.text, // 假设 judge 返回的 JSON 格式为 { answer: true, text: "..." }
+                        };
+                        setMessages((prev) => [...prev, judgeMsg]);
+                    }
+                } catch (error) {
+                    console.error("Error parsing judge response:", error);
+                }
             })
             .catch((err) => console.log(err));
-
     };
+
 
     // 用于检测上一次的账户状态
     const prevAccountRef = useRef(wallet.account);
@@ -134,6 +183,22 @@ function CourtroomPage() {
         prevAccountRef.current = wallet.account;
     }, [wallet.account, navigate]);
 
+    // 控制“质证结束”分割线是否显示
+    const [showDivider, setShowDivider] = useState(false);
+
+    // 点击后显示分割线，并让按钮失效
+    const handleEndProof = () => {
+        const dividerMsg: Message = {
+            id: Date.now(),
+            user: 'divider',
+            text: '质证结束',
+        };
+        // 在合适的位置插入 divider，例如追加到末尾
+        setMessages(prev => [...prev, dividerMsg]);
+        setShowDivider(true); // 或根据你的需求，不再需要 showDivider 状态控制按钮
+    };
+
+
     return (
         <div className="app-container">
             {/* 左侧证据区 */}
@@ -150,11 +215,14 @@ function CourtroomPage() {
                  * 比如：当我们遍历到第三条时插入一个 Divider，
                  * 这里只是演示做法，实际项目可以根据后端逻辑判断插入位置
                  */}
-                {messages.map((msg, index) => (
-                    <React.Fragment key={msg.id}>
+                {messages.map((msg) => {
+                    if (msg.user === 'divider') {
+                        return <Divider key={msg.id} text={msg.text}/>;
+                    }
+                    return (
                         <SpeechBlock
+                            key={msg.id}
                             role={msg.user}
-                            // 根据role传不同颜色
                             color={
                                 msg.user === 'judge'
                                     ? '#FF6666'
@@ -164,13 +232,22 @@ function CourtroomPage() {
                             }
                             text={msg.text}
                         />
-                        {/** 当index为2的时候插入一个 Divider(仅演示) */}
-                        {index === 2 && <Divider text="质证结束"/>}
-                    </React.Fragment>
-                ))}
+                    );
+                })}
+
 
                 {/* 输入框，用来发送'我方'消息 */}
                 <InputBox onSend={handleMyMessageSend}/>
+
+                {/* 新增：质证结束按钮 */}
+                <button
+                    onClick={handleEndProof}
+                    disabled={showDivider}  // 当showDivider为true时按钮变灰禁用
+                    style={{margin: '16px 0'}}
+                > 质证结束
+                </button>
+
+
             </div>
 
             {/* 右侧证据区 */}
