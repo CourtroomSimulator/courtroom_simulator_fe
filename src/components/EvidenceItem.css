@@ -1,15 +1,20 @@
 /* EvidenceItem.css */
 
 .evidence-item {
-    width: 80px;
-    height: 40px;
+    width: 90%; /* 让它适应 .left-panel 和 .right-panel 的宽度 */
+    max-width: 100%; /* 限制最大宽度 */
+    /*min-height: 40px;*/
     color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
-    margin: 8px 0; /* 上下间隔 */
+    text-align: center; /* 确保文字居中 */
+    border-radius: 8px;
+    margin: 10px 0; /* 增加上下间隔 */
     cursor: pointer;
+    padding: 10px; /* 增加内边距，让内容有更多空间 */
+    word-wrap: break-word; /* 允许长文本换行 */
+    white-space: normal; /* 允许文本自动换行 */
 }
 
 .evidence-item:hover {

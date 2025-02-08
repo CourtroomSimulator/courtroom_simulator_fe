@@ -1,16 +1,17 @@
 /* 父容器 */
+
 .app-container {
     display: flex;
     justify-content: center;
     align-items: stretch; /* 让子项充满高度 */
-    height: 100vh;
+    height: 80vh;
     width: 100vw;
     box-sizing: border-box;
 }
 
 /* 左侧和右侧证据区 */
 .left-panel, .right-panel {
-    width: 120px;
+    width: 300px; /* 增加面板宽度 */
     overflow-y: auto;
     box-sizing: border-box;
     flex-shrink: 0;
@@ -21,7 +22,7 @@
     justify-content: center; /* 确保垂直居中 */
     align-items: center; /* 确保水平居中 */
     /*background-color: #000000;*/
-    height: 100vh; /* 确保面板填满整个屏幕高度 */
+    /*height: 100vh; !* 确保面板填满整个屏幕高度 *!*/
 }
 
 /* 中间面板：采用 flex 布局，整体固定高度 */
