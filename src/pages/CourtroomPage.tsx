@@ -20,6 +20,7 @@ import InputBox from '../components/InputBox';
 import {ConnectButton, useWallet} from "@suiet/wallet-kit";
 import {getTokenBalance} from "../sui/getBalance.ts";
 import {mockMessages} from "../mock/messages.ts";
+import {deepseek} from "../api/deepseekApi.ts";
 
 
 const csCoin = '0x8b62526154296b153d8eaff7763af537f2128ab957671c563968fd2d5b44a141::courtroom_simulator_token::COURTROOM_SIMULATOR_TOKEN';
@@ -158,7 +159,7 @@ function CourtroomPage() {
     // 控制“质证结束”分割线是否显示
     const [showSummary, setShowSummary] = useState(false);
     // 新增：总结按钮点击时处理函数（使用 reduce 按顺序拼接）
-    const handleSummary = () => {
+    const handleSummary = async () => {
         // 按 messages 数组的顺序逐条转换消息
         const summaryPayload = messages.reduce((acc, msg) => {
             if (msg.user === "opponent") {
@@ -179,18 +180,62 @@ function CourtroomPage() {
         console.log("Summary payload:", combinedPayloadStr);
 
         // 调用 judge 接口
-        getAgentMessage("judge", combinedPayloadStr)
-            .then((judgeList: Message[]) => {
-                judgeList.forEach((msg: Message) =>
-                    console.log(`Summary message from ${msg.user}: ${msg.text}`)
-                );
-                // 可选：将返回的消息添加到消息列表中
-                setMessages((prev) => [...prev, ...judgeList]);
+        // getAgentMessage("judge", combinedPayloadStr)
+        //     .then((judgeList: Message[]) => {
+        //         judgeList.forEach((msg: Message) =>
+        //             console.log(`Summary message from ${msg.user}: ${msg.text}`)
+        //         );
+        //         // 可选：将返回的消息添加到消息列表中
+        //         setMessages((prev) => [...prev, ...judgeList]);
+        //     })
+        //     .catch((error) => console.error("Summary error:", error));
+
+        // const messageContent = await deepseek(combinedPayloadStr);
+        deepseek(combinedPayloadStr)
+            .then((messageContent: string | null) => {
+                if (messageContent === null || messageContent === '') {
+                    console.error("Received null or empty response from deepseek.");
+                    return; // 如果返回 null 或空字符串，提前退出
+                }
+
+                const newMessage: Message = {
+                    id: Date.now(), // 使用 Date.now() 来生成唯一 ID，或者你可以使用其他方式
+                    user: 'judge', // 假设这里是 judge 角色，你可以根据需求动态设置
+                    text: messageContent,
+                };
+
+                setMessages((prev) => [...prev, newMessage]);
+
+                // const dividerMsg: Message = {
+                //     id: Date.now(),
+                //     user: 'divider',
+                //     text: '总结',
+                // };
+                // // 在合适的位置插入 divider，例如追加到末尾
+                // setMessages((prev) => [...prev, dividerMsg]);
+                //
+                // setShowSummary(true);
             })
-            .catch((error) => console.error("Summary error:", error));
+            .catch((error) => {
+                console.error("Error from deepseek:", error);
+            });
+
+
+        // if (!messageContent) {
+        //     console.error("从 deepseek 获取到 null 或空的响应。");
+        //     return; // 如果返回 null 或空字符串，提前退出
+        // }
+        //
+        // const newMessage: Message = {
+        //     id: Date.now(), // You can use Date.now() to generate a unique ID, or use another strategy.
+        //     user: 'judge', // Assuming the role here, but you can dynamically set this based on your requirements
+        //     text: messageContent,
+        // };
+        //
+        // setMessages((prev) => [...prev, newMessage]);
 
         const dividerMsg: Message = {
-            id: Date.now(),
+            id: Date.now() - 1,
             user: 'divider',
             text: '总结',
         };
