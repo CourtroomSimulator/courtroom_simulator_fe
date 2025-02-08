@@ -101,61 +101,60 @@ function CourtroomPage() {
         };
         setMessages((prev) => [...prev, userMsg]);
 
-        // 2. 调用 claimantAttorney 接口，获取其返回的文本
-        getAgentMessage("opponent", content)
-            .then((claimantResponse) => {
-                // 假设 claimantResponse 中包含 text 字段
-                // 将 claimantAttorney 的消息添加到消息列表中
-                const claimantMsg: Message = {
-                    id: Date.now(),
-                    user: "opponent",
-                    text: claimantResponse.text,
-                };
-                setMessages((prev) => [...prev, claimantMsg]);
+        // 2. 调用 claimantAttorney 接口
+        getAgentMessage("claimantAttorney", content)
+            .then((claimantList: Message[]) => {
+                // 将 claimantAttorney 返回的每条消息的 user 字段改为 "opponent"
+                const opponentList: Message[] = claimantList.map((msg: Message) => ({
+                    ...msg,
+                    user: "opponent" as "opponent",
+                }));
 
-                // 3. 构造组合 payload 数组：
-                //    - 第一项为 claimantAttorney 的消息（使用返回的文本）
-                //    - 第二项为 defendantAttorney 的消息（使用用户输入的文本）
+                // 使用 console.log 输出每条消息
+                opponentList.forEach((msg: Message) =>
+                    console.log(`Message from ${msg.user}: ${msg.text}`)
+                );
+
+                // 将处理后的消息添加到消息列表中
+                setMessages((prev) => [...prev, ...opponentList]);
+
+                // 从 claimantAttorney 的响应中取第一条消息的文本作为回复文本（如果有）
+                const claimantText = opponentList.length > 0 ? opponentList[0].text : "";
+
+                // 构造组合 payload，格式如下：
+                // [
+                //   { user: "claimantAttorney", content: { text: claimantText } },
+                //   { user: "defendantAttorney", content: { text: content } }
+                // ]
                 const combinedPayload = [
                     {
                         user: "claimantAttorney",
-                        content: {
-                            text: claimantResponse.text,
-                        },
+                        content: {text: claimantText},
                     },
                     {
                         user: "defendantAttorney",
-                        content: {
-                            text: content,
-                        },
+                        content: {text: content},
                     },
                 ];
+                console.log("combinedPayload:", combinedPayload);
 
-                // 将数组转换为 JSON 字符串作为 judge 接口的参数
+                // 将组合 payload 转为 JSON 字符串
                 const combinedPayloadStr = JSON.stringify(combinedPayload);
 
-                // 4. 调用 judge 接口
+                // 3. 调用 judge 接口，处理方式与 claimantAttorney 一致
                 return getAgentMessage("judge", combinedPayloadStr);
             })
-            .then((judgeResponse) => {
-                // judgeResponse.text 为 JSON 格式的字符串
-                try {
-                    const parsed = JSON.parse(judgeResponse.text);
-                    // 如果 judge 返回的 JSON 中 answer 字段为 true，则将 judge 的文本添加到消息列表中
-                    if (parsed.answer === true) {
-                        const judgeMsg: Message = {
-                            id: Date.now(),
-                            user: "judge",
-                            text: parsed.text, // 假设 judge 返回的 JSON 格式为 { answer: true, text: "..." }
-                        };
-                        setMessages((prev) => [...prev, judgeMsg]);
-                    }
-                } catch (error) {
-                    console.error("Error parsing judge response:", error);
-                }
+            .then((judgeList: Message[]) => {
+                // 使用 console.log 输出 judge 接口返回的每条消息
+                judgeList.forEach((msg: Message) =>
+                    console.log(`Message from ${msg.user}: ${msg.text}`)
+                );
+                // 将 judge 返回的消息添加到消息列表中
+                setMessages((prev) => [...prev, ...judgeList]);
             })
             .catch((err) => console.log(err));
     };
+
 
 
     // 用于检测上一次的账户状态
