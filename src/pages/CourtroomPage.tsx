@@ -155,6 +155,49 @@ function CourtroomPage() {
             .catch((err) => console.log(err));
     };
 
+    // 控制“质证结束”分割线是否显示
+    const [showSummary, setShowSummary] = useState(false);
+    // 新增：总结按钮点击时处理函数（使用 reduce 按顺序拼接）
+    const handleSummary = () => {
+        // 按 messages 数组的顺序逐条转换消息
+        const summaryPayload = messages.reduce((acc, msg) => {
+            if (msg.user === "opponent") {
+                acc.push({
+                    user: "claimantAttorney",
+                    content: {text: msg.text},
+                });
+            } else if (msg.user === "mine") {
+                acc.push({
+                    user: "defendantAttorney",
+                    content: {text: msg.text},
+                });
+            }
+            return acc;
+        }, [] as { user: string; content: { text: string } }[]);
+
+        const combinedPayloadStr = JSON.stringify(summaryPayload);
+        console.log("Summary payload:", combinedPayloadStr);
+
+        // 调用 judge 接口
+        getAgentMessage("judge", combinedPayloadStr)
+            .then((judgeList: Message[]) => {
+                judgeList.forEach((msg: Message) =>
+                    console.log(`Summary message from ${msg.user}: ${msg.text}`)
+                );
+                // 可选：将返回的消息添加到消息列表中
+                setMessages((prev) => [...prev, ...judgeList]);
+            })
+            .catch((error) => console.error("Summary error:", error));
+
+        const dividerMsg: Message = {
+            id: Date.now(),
+            user: 'divider',
+            text: '总结',
+        };
+        // 在合适的位置插入 divider，例如追加到末尾
+        setMessages(prev => [...prev, dividerMsg]);
+        setShowSummary(true);
+    };
 
 
     // 用于检测上一次的账户状态
@@ -203,76 +246,78 @@ function CourtroomPage() {
             {/* 左侧证据区 */}
             <div className="left-panel">
                 {leftEvidences.map((ev) => (
-                    <EvidenceItem key={ev.id} text={ev.title}/>
+                    <EvidenceItem key={ev.id} text={ev.title} backgroundColor="#6666ff"/>
                 ))}
             </div>
 
-            {/* 中间发言区 */}
+            {/* 中间区域：消息展示区 + 固定底部的输入区和按钮 */}
             <div className="middle-panel">
-                {/**
-                 * 在这里根据 messages 数组渲染一系列 SpeechBlock，
-                 * 比如：当我们遍历到第三条时插入一个 Divider，
-                 * 这里只是演示做法，实际项目可以根据后端逻辑判断插入位置
-                 */}
-                {messages.map((msg) => {
-                    if (msg.user === 'divider') {
-                        return <Divider key={msg.id} text={msg.text}/>;
-                    }
-                    return (
-                        <SpeechBlock
-                            key={msg.id}
-                            role={msg.user}
-                            color={
-                                msg.user === 'judge'
-                                    ? '#FF6666'
-                                    : msg.user === 'opponent'
-                                        ? '#66B0FF'
-                                        : '#FFFF88'
-                            }
-                            text={msg.text}
-                        />
-                    );
-                })}
-
-
-                {/* 输入框，用来发送'我方'消息 */}
-                <InputBox onSend={handleMyMessageSend}/>
-
-                {/* 新增：质证结束按钮 */}
-                <button
-                    onClick={handleEndProof}
-                    disabled={showDivider}  // 当showDivider为true时按钮变灰禁用
-                    style={{margin: '16px 0'}}
-                > 质证结束
-                </button>
-
-
+                {/* 消息展示区 */}
+                <div className="messages-container">
+                    {messages.map((msg) => {
+                        if (msg.user === 'divider') {
+                            return <Divider key={msg.id} text={msg.text}/>;
+                        }
+                        return (
+                            <SpeechBlock
+                                key={msg.id}
+                                role={msg.user as 'judge' | 'opponent' | 'mine'}
+                                color={
+                                    msg.user === 'judge'
+                                        ? '#FF6666'
+                                        : msg.user === 'opponent'
+                                            ? '#66B0FF'
+                                            : '#FFFF88'
+                                }
+                                text={msg.text}
+                            />
+                        );
+                    })}
+                </div>
+                {/* 固定底部：输入框和按钮 */}
+                <div className="chat-footer">
+                    <InputBox onSend={handleMyMessageSend}/>
+                    <div className="buttons">
+                        <button
+                            onClick={handleEndProof}
+                            disabled={showDivider}
+                        >
+                            质证结束
+                        </button>
+                        <button
+                            onClick={handleSummary}
+                            disabled={showSummary}
+                        >
+                            总结
+                        </button>
+                    </div>
+                </div>
             </div>
 
             {/* 右侧证据区 */}
             <div className="right-panel">
                 {rightEvidences.map((ev) => (
-                    <EvidenceItem key={ev.id} text={ev.title}/>
+                    <EvidenceItem key={ev.id} text={ev.title} backgroundColor="#ff9966"/>
                 ))}
             </div>
+
             {/* ConnectButton 固定在右上角 */}
             <div className="connect-button">
-                <div className='connect-button'>
-                    <ConnectButton
-                        onConnectError={(error) => {
-                            console.error("Connect error: ", error);
-                        }}
-                    />
-                    {balance !== null && (
-                        <div style={{marginTop: "20px"}}>
-                            <h3>CS Balance: {balance?.toFixed(9)}</h3>
-                        </div>
-                    )}
-                </div>
+                <ConnectButton
+                    onConnectError={(error) => {
+                        console.error("Connect error: ", error);
+                    }}
+                />
+                {balance !== null && (
+                    <div style={{marginTop: "20px"}}>
+                        <h3>CS Balance: {balance?.toFixed(9)}</h3>
+                    </div>
+                )}
             </div>
-
         </div>
     );
+
+
 }
 
 export default CourtroomPage;

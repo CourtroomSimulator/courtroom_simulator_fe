@@ -10,4 +10,5 @@
     padding: 8px;
     border-radius: 4px;
     box-sizing: border-box;
+    flex-shrink: 0;        /* 禁止 flex 压缩，确保不会重叠 */
 }
