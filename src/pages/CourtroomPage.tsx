@@ -349,13 +349,13 @@ function CourtroomPage() {
                             onClick={handleEndProof}
                             disabled={showDivider}
                         >
-                            质证结束
+                            Conclude the Cross - Examination
                         </button>
                         <button
                             onClick={handleSummary}
                             disabled={showSummary}
                         >
-                            总结
+                            Pronounce
                         </button>
                     </div>
                 </div>

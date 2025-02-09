@@ -37,7 +37,7 @@ const InputBox: React.FC<InputBoxProps> = ({ onSend }) => {
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
             />
-            <button onClick={handleSend}>发送</button>
+            <button onClick={handleSend}>Send</button>
         </div>
     );
 };
