@@ -41,7 +41,7 @@ function LandingPage() {
     // 在这里调用接口获取按钮文字
     useEffect(() => {
 
-        setButtonText("米2某诉王3某重婚罪案");
+        setButtonText("The Case of Mi 2 versus Wang 3 on the Charge of Bigamy");
     }, []);
 
     // 点击按钮后，跳转到 /courtroom
@@ -73,9 +73,9 @@ function LandingPage() {
             <button onClick={handleClick}>
                 {buttonText}
             </button>
-            <button onClick={handleMintClick}>
-                Mint Coin
-            </button>
+            {/*<button onClick={handleMintClick}>*/}
+            {/*    Mint Coin*/}
+            {/*</button>*/}
             {/* 使用 suiet wallet kit 的 ConnectButton，默认点击后会弹出 modal */}
             <div className='connect-button'>
                 <ConnectButton
