@@ -1,14 +1,33 @@
-/* SpeechBlock.css */
+.speech-block-container {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    width: 90%;
+    min-width: 300px; /* 设置最小宽度，避免被压缩 */
+}
 
+/* 所有角色的名字都在左边 */
+.speech-block-container {
+    flex-direction: row; /* 让名字在对话框的左边，内容在右边 */
+}
+
+/* 发言人名字样式 */
+.speaker-name {
+    font-weight: bold;
+    color: #333;
+    white-space: nowrap;  /* 确保名字不会换行 */
+    margin-right: 8px;     /* 控制名字与内容之间的距离 */
+}
+
+/* SpeechBlock 样式 */
 .speech-block {
     width: 100%;
     min-height: 40px;
-    margin: 8px 0;
     color: #000000;
     display: flex;
     align-items: center;
     padding: 8px;
     border-radius: 4px;
     box-sizing: border-box;
-    flex-shrink: 0;        /* 禁止 flex 压缩，确保不会重叠 */
+    flex-shrink: 0; /* 禁止压缩 */
 }

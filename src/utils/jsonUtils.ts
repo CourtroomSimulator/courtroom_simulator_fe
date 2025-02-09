@@ -14,11 +14,9 @@ export const extractWinnerName = (inputString: string): string | null => {
 
 export const extractText = (inputString: string): string | null => {
     // 正则表达式匹配包含JSON格式的字符串并提取text字段
-    console.log("input type: ", typeof inputString);
-
     const regex = /\{\s*"winnerName":\s*"[^"]*",\s*"text":\s*"([^"]*)"\s*\}/;
     const match = inputString.match(regex);
-    console.log("Match: ", match);
+
     if (match && match[1]) {
         // 返回匹配到的 text
         return match[1];

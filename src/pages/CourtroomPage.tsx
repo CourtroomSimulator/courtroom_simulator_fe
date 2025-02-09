@@ -378,7 +378,6 @@ function CourtroomPage() {
         </div>
     );
 
-
 }
 
 export default CourtroomPage;
