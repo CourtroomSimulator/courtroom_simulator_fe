@@ -259,7 +259,7 @@ function CourtroomPage() {
         const dividerMsg: Message = {
             id: Date.now() - 1,
             user: 'divider',
-            text: '总结',
+            text: 'Pronounce',
         };
         // 在合适的位置插入 divider，例如追加到末尾
         setMessages(prev => [...prev, dividerMsg]);
@@ -300,7 +300,7 @@ function CourtroomPage() {
         const dividerMsg: Message = {
             id: Date.now(),
             user: 'divider',
-            text: '质证结束',
+            text: 'The cross - examination is concluded',
         };
         // 在合适的位置插入 divider，例如追加到末尾
         setMessages(prev => [...prev, dividerMsg]);
