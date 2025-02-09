@@ -68,30 +68,33 @@ function LandingPage() {
 
     return (
 
-        <div style={{padding: '50px'}}>
-            <h2>welcome court room</h2>
-            <button onClick={handleClick}>
-                {buttonText}
-            </button>
-            {/*<button onClick={handleMintClick}>*/}
-            {/*    Mint Coin*/}
-            {/*</button>*/}
-            {/* 使用 suiet wallet kit 的 ConnectButton，默认点击后会弹出 modal */}
-            <div className='connect-button'>
-                <ConnectButton
-                    onConnectError={(error) => {
-                        console.error("Connect error: ", error);
-                    }}
-
-                />
-                {balance !== null && (
-                    <div style={{marginTop: "20px"}}>
-                        <h3>CS Balance: {balance?.toFixed(9)}</h3>
-                    </div>
-                )}
-            </div>
-
+    <div style={{ 
+    padding: '50px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100vh' 
+    }}>
+    <h2>Welcome to the Court Room Simulator</h2>
+    <h3>Enter a case to simluate...</h3>
+    <button onClick={handleClick}>
+        {buttonText}
+    </button>
+    
+    <div className='connect-button' style={{ marginTop: '20px' }}>
+        <ConnectButton
+        onConnectError={(error) => {
+            console.error("Connect error: ", error);
+        }}
+        />
+        {balance !== null && (
+        <div style={{marginTop: "20px"}}>
+            <h3>CS Balance: {balance?.toFixed(9)}</h3>
         </div>
+        )}
+    </div>
+    </div>
     );
 }
 
