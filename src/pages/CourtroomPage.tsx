@@ -177,8 +177,8 @@ function CourtroomPage() {
             }
             return acc;
         }, [] as { user: string; content: { text: string } }[]);
-
-        const combinedPayloadStr = JSON.stringify(summaryPayload) + "Please strictly generate the judgment content based on the above historical records, directly output a pure JSON object (without any comments, code block markers, or additional text). The format must strictly adhere to: {\"winnerName\": \"name of the winning party\", \"text\": \"complete judgment text\"}.";
+        const summaryPrompt = "Please strictly generate the judgment content based on the above historical records, directly output a pure JSON object (without any comments, code block markers, or additional text). The format must strictly adhere to: {\"winnerName\": \"name of the winning party\", \"text\": \"complete judgment text\"}. Ensure that the 'text' content is written in a formal and solemn tone, mimicking the style of a judge delivering a court verdict."
+        const combinedPayloadStr = JSON.stringify(summaryPayload) + summaryPrompt;
         console.log("Summary payload:", combinedPayloadStr);
 
         // 调用 judge 接口
