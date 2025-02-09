@@ -231,6 +231,12 @@ function CourtroomPage() {
                 };
 
                 setMessages((prev) => [...prev, newMessage]);
+                // 显示弹窗
+                if (winner === "claimantAttorney") {
+                    window.alert("You lose");
+                } else if (winner === "defendantAttorney") {
+                    window.alert("You win");
+                }
             })
             .catch((error) => {
                 console.error("Error from deepseek:", error);
