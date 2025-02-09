@@ -9,8 +9,8 @@ interface SpeechBlockProps {
 }
 
 const roleMap = {
-    judge: 'judge',
-    opponent: 'lawer',
+    judge: 'Judge',
+    opponent: 'Claimant Attorney',
     mine: 'me',
 };
 
