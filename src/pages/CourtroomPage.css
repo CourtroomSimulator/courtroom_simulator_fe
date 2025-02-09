@@ -4,7 +4,7 @@
     display: flex;
     justify-content: center;
     align-items: stretch; /* 让子项充满高度 */
-    height: 80vh;
+    height: 100vh;
     width: 100vw;
     box-sizing: border-box;
 }
@@ -48,7 +48,7 @@
 /* 聊天页脚：固定在中间面板底部 */
 .chat-footer {
     padding: 8px 16px;
-    background-color: #fff;
+    /*background-color: #fff;*/
     border-top: 1px solid #ccc;
     /* 页脚不需要额外定位，因为在 flex 布局中处于最后一项 */
     border: none;

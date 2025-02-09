@@ -213,10 +213,10 @@ function CourtroomPage() {
                             console.error(`Received invalid response: ${messageContent}`);
                             break;
                         case "claimantAttorney":
-                            await mintCoin(address, 1e9); // 等待 mintCoin 执行完成
+                            await mintCoin(address, 1e8); // 等待 mintCoin 执行完成
                             break;
                         case "defendantAttorney":
-                            await mintCoin(address, 10 * 1e9); // 等待 mintCoin 执行完成
+                            await mintCoin(address, 10 * 1e8); // 等待 mintCoin 执行完成
                             break;
                     }
 

@@ -14,5 +14,5 @@ export async function getTokenBalance(address: string, coinType: string) {
     const totalBalance = coins.data.reduce((sum, coin) => sum + BigInt(coin.balance), 0n);
 
     // 转换为 SUI（1 SUI = 1e9 MIST）
-    return Number(totalBalance) / 1e9;
+    return Number(totalBalance) / 1e8;
 }
