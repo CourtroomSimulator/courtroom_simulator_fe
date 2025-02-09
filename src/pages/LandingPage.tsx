@@ -41,7 +41,7 @@ function LandingPage() {
     // 在这里调用接口获取按钮文字
     useEffect(() => {
 
-        setButtonText("The Case of Mi 2 versus Wang 3 on the Charge of Bigamy");
+        setButtonText("The Case of Amelia Brown versus John Dow on the Charge of Bigamy");
     }, []);
 
     // 点击按钮后，跳转到 /courtroom
