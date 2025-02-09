@@ -2,64 +2,60 @@
 import {Evidence} from '../types/evidence';
 
 export const mockEvidences: Record<'left' | 'right', Evidence[]> = {
-  "left": [
-    {
-      "id": 1,
-      "title": "自诉人米2某身份证证实：诉讼主体资格。"
-    },
-    {
-      "id": 2,
-      "title": "水城县尖山村委出具的证明证实：米2某与王3某于1983年10月1日按当地风俗办理结婚仪式，并生育四个子女，证明其二人系事实婚姻。"
-    },
-    {
-      "id": 3,
-      "title": "证人黄某所写的情况说明证实：1983年10月1日米2某与王3某结婚，及婚后生育四个子女。"
-    },
-    {
-      "id": 4,
-      "title": "证人杜某所写的情况说明证明：米2某与王3某于1983年10月1日结婚，并生育四个子女。"
-    },
-    {
-      "id": 5,
-      "title": "证人王某1（王3某之子）的证言证实：米2某当时离家出走是事出有因，是因带孩子王某1生病外出治病。"
-    },
-    {
-      "id": 6,
-      "title": "证人王某2（王3某之女）的证言证实：王3某长期对米2某进行家暴。"
-    }
-  ],
-  "right": [
-    {
-      "id": 1,
-      "title": "户口本证实：王3某与米2某、敖某所生育子女的情况。"
-    },
-    {
-      "id": 2,
-      "title": "鉴定意见书证实：王某1与王3某系父子关系。"
-    },
-    {
-      "id": 3,
-      "title": "婚姻登记证明证实：王3某与敖某于2016年7月28日登记结婚。"
-    },
-    {
-      "id": 4,
-      "title": "王3某家庭户薄复印件证实：诉讼主体资格及其尚有王某3、王某4两个子女需要抚养。"
-    },
-    {
-      "id": 5,
-      "title": "水城县尖山街道办出具的情况说明一份。证实：米2某于2008年3月24日离家出走，至今未归。"
-    },
-    {
-      "id": 6,
-      "title": "王某5的家庭户口薄，及水城县尖山村委会的证明一份。证实：王3某的父亲王某5已死亡，母亲晋某某需要王3某赡养，其弟王某6系精神病患者，也需要王3某进行照顾。"
-    },
-    {
-      "id": 7,
-      "title": "六盘水市山城精神病院出具的疾病证明书、病历各一份，残疾人证件、水城县人民法院民事调解书各一份。证实：王3某的兄弟王某6经六盘水市山城精神病诊断为精神分裂症，经水城县残疾人联合会认定为残疾人，肢体残疾等级为二级。于2015年12月15日与其妻子晋某调解离婚，婚后其子王1某由王某6抚养。被告人王3某系其兄弟王某6的唯一赡养人。"
-    },
-    {
-      "id": 8,
-      "title": "王3某的询问笔录一份。证实：被告人王3某承认与米2某具有事实婚姻关系，且与敖某进行结婚登记的事实。"
-    }
-  ]
+    "left": [
+        {
+            "id": 1,
+            "title": "The certificate issued by the Jianshan Village Committee of Shuicheng County confirms: Mi 2 and Wang 3 held a wedding ceremony according to local customs on October 1, 1983, and had four children, proving that they were in a de facto marriage."
+        },
+        {
+            "id": 2,
+            "title": "The statement written by witness Huang confirms: Mi 2 and Wang 3 got married on October 1, 1983, and had four children after marriage."
+        },
+        {
+            "id": 3,
+            "title": "The statement written by witness Du confirms: Mi 2 and Wang 3 got married on October 1, 1983, and had four children."
+        },
+        {
+            "id": 4,
+            "title": "The testimony of witness Wang 1 (son of Wang 3) confirms: Mi 2 left home for a reason, which was to seek medical treatment for their child Wang 1 who was ill."
+        },
+        {
+            "id": 5,
+            "title": "The testimony of witness Wang 2 (daughter of Wang 3) confirms: Wang 3 had long-term domestic violence against Mi 2."
+        }
+    ],
+    "right": [
+        {
+            "id": 1,
+            "title": "The household register confirms: The situation of the children born to Wang 3, Mi 2, and Ao."
+        },
+        {
+            "id": 2,
+            "title": "The appraisal report confirms: Wang 1 and Wang 3 are father and son."
+        },
+        {
+            "id": 3,
+            "title": "The marriage registration certificate confirms: Wang 3 and Ao registered their marriage on July 28, 2016."
+        },
+        {
+            "id": 4,
+            "title": "The copy of Wang 3's family household register confirms: The qualification of the litigation subject and that Wang 3 still has two children, Wang 3 and Wang 4, to support."
+        },
+        {
+            "id": 5,
+            "title": "A statement issued by the Jianshan Sub-district Office of Shuicheng County. Confirms: Mi 2 left home on March 24, 2008, and has not returned since."
+        },
+        {
+            "id": 6,
+            "title": "The family household register of Wang 5 and a certificate from the Jianshan Village Committee of Shuicheng County. Confirms: Wang 3's father, Wang 5, has passed away, and his mother, Jin, requires Wang 3's support. His younger brother, Wang 6, who suffers from mental illness, also requires Wang 3's care."
+        },
+        {
+            "id": 7,
+            "title": "A disease certificate and medical records issued by the Liupanshui Shancheng Psychiatric Hospital, a disability certificate, and a civil mediation document from the Shuicheng County People's Court. Confirms: Wang 3's brother, Wang 6, was diagnosed with schizophrenia by the Liupanshui Shancheng Psychiatric Hospital and was identified as a disabled person with a second-level physical disability by the Shuicheng County Disabled Persons' Federation. He divorced his wife, Jin, on December 15, 2015, and their son, Wang 1, was to be raised by Wang 6. The defendant, Wang 3, is the sole supporter of his brother Wang 6."
+        },
+        {
+            "id": 8,
+            "title": "An interrogation record of Wang 3. Confirms: The defendant, Wang 3, admits to having a de facto marriage relationship with Mi 2 and the fact of registering a marriage with Ao."
+        }
+    ]
 };
