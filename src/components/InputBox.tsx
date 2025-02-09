@@ -32,7 +32,7 @@ const InputBox: React.FC<InputBoxProps> = ({ onSend }) => {
         <div className="input-box">
             <input
                 type="text"
-                placeholder="请输入..."
+                placeholder="Please enter your argument..."
                 value={value}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
