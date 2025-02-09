@@ -9,7 +9,7 @@ export const mockMessages: Message[] = [
     },
     {
         "user": "opponent",
-        "text": "Greeting, Defendant's Attorney! You need to refute the testimony and facts presented by our side and find ways to defend your client! \nI'll defeat you with my knowledge.",
+        "text": "Greeting, Defendant's Attorney! You need to refute the testimony and facts presented by our side and find ways to defend your client! I'll defeat you with my knowledge.",
         "id": 1
     }
 ];
