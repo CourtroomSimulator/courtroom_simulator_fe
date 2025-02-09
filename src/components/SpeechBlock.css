@@ -8,7 +8,12 @@
 
 /* 所有角色的名字都在左边 */
 .speech-block-container {
-    flex-direction: row; /* 让名字在对话框的左边，内容在右边 */
+    display: flex;
+    flex-direction: column;  /* 垂直排列名字和消息 */
+    align-items: flex-start; /* 确保对齐方式为左对齐 */
+    margin: 8px 0;
+    width: 100%;
+    min-width: 300px; /* 设置最小宽度，避免被压缩 */
 }
 
 /* 发言人名字样式 */
@@ -16,7 +21,7 @@
     font-weight: bold;
     color: #333;
     white-space: nowrap;  /* 确保名字不会换行 */
-    margin-right: 8px;     /* 控制名字与内容之间的距离 */
+    margin-bottom: 4px;    /* 控制名字与消息之间的间距 */
 }
 
 /* SpeechBlock 样式 */
