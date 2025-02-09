@@ -21,6 +21,8 @@ import {ConnectButton, useWallet} from "@suiet/wallet-kit";
 import {getTokenBalance} from "../sui/getBalance.ts";
 import {mockMessages} from "../mock/messages.ts";
 import {deepseek} from "../api/deepseekApi.ts";
+import {extractText, extractWinnerName} from "../utils/jsonUtils.ts";
+import {mintCoin} from "../sui/mintCoin.ts";
 
 
 const csCoin = '0x8b62526154296b153d8eaff7763af537f2128ab957671c563968fd2d5b44a141::courtroom_simulator_token::COURTROOM_SIMULATOR_TOKEN';
@@ -156,7 +158,7 @@ function CourtroomPage() {
             .catch((err) => console.log(err));
     };
 
-    // 控制“质证结束”分割线是否显示
+    // 控制“总结”分割线是否显示
     const [showSummary, setShowSummary] = useState(false);
     // 新增：总结按钮点击时处理函数（使用 reduce 按顺序拼接）
     const handleSummary = async () => {
@@ -192,29 +194,43 @@ function CourtroomPage() {
 
         // const messageContent = await deepseek(combinedPayloadStr);
         deepseek(combinedPayloadStr)
-            .then((messageContent: string | null) => {
+            .then(async (messageContent: string | null) => {
                 if (messageContent === null || messageContent === '') {
                     console.error("Received null or empty response from deepseek.");
                     return; // 如果返回 null 或空字符串，提前退出
                 }
 
+                let winner = extractWinnerName(messageContent);
+                let text = extractText(messageContent);
+                if (text === null || text === '') {
+                    console.error(`Received invalid response: ${messageContent}`);
+                    return; // 如果返回 null 或空字符串，提前退出
+                }
+
+                if (address) {
+                    switch (winner) {
+                        case null:
+                            console.error(`Received invalid response: ${messageContent}`);
+                            break;
+                        case "claimantAttorney":
+                            await mintCoin(address, 1e9); // 等待 mintCoin 执行完成
+                            break;
+                        case "defendantAttorney":
+                            await mintCoin(address, 10 * 1e9); // 等待 mintCoin 执行完成
+                            break;
+                    }
+
+                    // 在 mintCoin 成功后再执行 csBalance
+                    await csBalance(); // 确保 mintCoin 成功后再调用 csBalance
+                }
+
                 const newMessage: Message = {
                     id: Date.now(), // 使用 Date.now() 来生成唯一 ID，或者你可以使用其他方式
                     user: 'judge', // 假设这里是 judge 角色，你可以根据需求动态设置
-                    text: messageContent,
+                    text: text,
                 };
 
                 setMessages((prev) => [...prev, newMessage]);
-
-                // const dividerMsg: Message = {
-                //     id: Date.now(),
-                //     user: 'divider',
-                //     text: '总结',
-                // };
-                // // 在合适的位置插入 divider，例如追加到末尾
-                // setMessages((prev) => [...prev, dividerMsg]);
-                //
-                // setShowSummary(true);
             })
             .catch((error) => {
                 console.error("Error from deepseek:", error);

@@ -10,7 +10,7 @@ const openai = new OpenAI({
     dangerouslyAllowBrowser: true
 });
 
- export async function deepseek(content:string) {
+export async function deepseek(content: string) {
     const completion = await openai.chat.completions.create({
         messages: [{role: "system", content: content}],
         model: "deepseek-chat",

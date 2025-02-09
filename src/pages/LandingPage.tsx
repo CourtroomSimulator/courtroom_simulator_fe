@@ -58,7 +58,7 @@ function LandingPage() {
     const handleMintClick = async () => {
         if (address) {
             try {
-                const result = await mintCoin(address);
+                const result = await mintCoin(address, 1e9);
                 console.log("Mint result:", result);
             } catch (error) {
                 console.error("Minting failed:", error);
