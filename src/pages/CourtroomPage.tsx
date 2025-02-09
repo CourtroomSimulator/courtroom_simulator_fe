@@ -178,7 +178,7 @@ function CourtroomPage() {
             return acc;
         }, [] as { user: string; content: { text: string } }[]);
 
-        const combinedPayloadStr = JSON.stringify(summaryPayload) + "请严格根据上述历史记录生成判决内容，直接输出一个纯净的JSON对象（不包含任何注释、代码块标记或额外文字），格式必须严格遵循：{\"winnerName\": \"获胜方名称\", \"text\": \"完整判决文本\"}";
+        const combinedPayloadStr = JSON.stringify(summaryPayload) + "Please strictly generate the judgment content based on the above historical records, directly output a pure JSON object (without any comments, code block markers, or additional text). The format must strictly adhere to: {\"winnerName\": \"name of the winning party\", \"text\": \"complete judgment text\"}.";
         console.log("Summary payload:", combinedPayloadStr);
 
         // 调用 judge 接口
