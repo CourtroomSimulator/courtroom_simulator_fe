@@ -1,6 +1,6 @@
 export const extractWinnerName = (inputString: string): string | null => {
     // 正则表达式匹配包含JSON格式的字符串
-    const regex = /{"winnerName":\s?"(\w+)",\s?"text":\s?"[^"]+"}/;
+    const regex = /\{\s*"winnerName":\s*"([^"]*)",\s*"text":\s*"[^"]*"\s*\}/;
     const match = inputString.match(regex);
 
     if (match && match[1]) {

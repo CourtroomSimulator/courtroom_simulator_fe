@@ -177,7 +177,7 @@ function CourtroomPage() {
             }
             return acc;
         }, [] as { user: string; content: { text: string } }[]);
-        const summaryPrompt = "Please strictly generate the judgment content based on the above historical records, directly output a pure JSON object (without any comments, code block markers, or additional text). The format must strictly adhere to: {\"winnerName\": \"name of the winning party\", \"text\": \"complete judgment text\"}. Ensure that the 'text' content is written in a formal and solemn tone, mimicking the style of a judge delivering a court verdict."
+        const summaryPrompt = "Please strictly generate the judgment content based on the above historical records, directly output a pure JSON object (without any comments, code block markers, or additional text). The format must strictly adhere to: {\"winnerName\": \"name of the winning party\", \"text\": \"complete judgment text\"}. Ensure that the 'text' content is written in a formal and solemn tone, mimicking the style of a judge delivering a court verdict. Winner can only be chosen from claimantAttorney or defendantAttorney."
         const combinedPayloadStr = JSON.stringify(summaryPayload) + summaryPrompt;
         console.log("Summary payload:", combinedPayloadStr);
 
@@ -208,14 +208,17 @@ function CourtroomPage() {
                 }
 
                 if (address) {
+                    console.log(winner)
                     switch (winner) {
                         case null:
                             console.error(`Received invalid response: ${messageContent}`);
                             break;
                         case "claimantAttorney":
+                            console.log("winner: claimantAttorney");
                             await mintCoin(address, 1e8); // 等待 mintCoin 执行完成
                             break;
                         case "defendantAttorney":
+                            console.log("winner: defendantAttorney");
                             await mintCoin(address, 10 * 1e8); // 等待 mintCoin 执行完成
                             break;
                     }
