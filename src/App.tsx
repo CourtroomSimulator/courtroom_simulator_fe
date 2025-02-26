@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WalletProvider } from "@suiet/wallet-kit";
 import DevCourtroomPage from "./pages/DevCourtroomPage.tsx";
 import DevLandingPage from "./pages/DevLandingPage.tsx";
+import AudioController from "./components/AudioController.tsx";
 
 const { networkConfig } = createNetworkConfig({
   localnet: { url: getFullnodeUrl("localnet") },
@@ -30,6 +31,7 @@ function App() {
               <Route path="/courtroom" element={<DevCourtroomPage />} />
               <Route path="/devcourtroom" element={<DevCourtroomPage />} />
             </Routes>
+            <AudioController />
           </BrowserRouter>
         </WalletProvider>
       </SuiClientProvider>

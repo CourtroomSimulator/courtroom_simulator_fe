@@ -6,6 +6,7 @@ import "./LandingPage.css";
 
 import logoImage from "../assets/logo.png";
 import courtBgImage from "../assets/Court_bg.jpg";
+import AudioController from "../components/AudioController";
 
 export default function DevLandingPage() {
   const navigate = useNavigate();
@@ -46,6 +47,7 @@ export default function DevLandingPage() {
           </button>
         </div>
       </div>
+      {/* <AudioController /> */}
     </div>
   );
 }

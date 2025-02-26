@@ -20,6 +20,7 @@ import { ConnectButton /*useWallet*/ } from "@suiet/wallet-kit";
 import { deepseek } from "../api/deepseekApi.ts";
 import { extractText, extractWinnerName } from "../utils/jsonUtils.ts";
 import { useNavigate } from "react-router-dom";
+import AudioController from "../components/AudioController.tsx";
 
 export default function DevCourtroomPage() {
   const navigate = useNavigate();
@@ -386,6 +387,7 @@ export default function DevCourtroomPage() {
           )}
         </div>
       </div>
+      {/* <AudioController /> */}
     </div>
   );
 }
