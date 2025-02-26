@@ -10,8 +10,8 @@
   box-sizing: border-box;
 }
 
-
-.left-panel, .right-panel {
+.left-panel,
+.right-panel {
   width: 120px;
   border: 1px solid #ccc;
   overflow-y: auto;

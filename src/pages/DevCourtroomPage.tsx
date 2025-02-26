@@ -1,69 +1,41 @@
-// App.tsx
-import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-
-// import "./CourtroomPage.css";
-
-// 1. 引入我们写的类型
-import { Message } from "../types/message";
+import "./CourtroomPage.css";
+import { useEffect, useState } from "react";
 import { Evidence } from "../types/evidence";
+import { Message } from "../types/message";
 
-// 2. 引入API函数
-import { getAgentMessage } from "../api/messageApi";
+import { mockMessages } from "../mock/messages.ts";
 import { fetchEvidences } from "../api/evidenceApi";
+import { getAgentMessage } from "../api/messageApi";
 
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import EvidenceItem from "../components/EvidenceItem";
 import SpeechBlock from "../components/SpeechBlock";
 import Divider from "../components/Divider";
 import InputBox from "../components/InputBox";
-// import { useCurrentAccount} from '@mysten/dapp-kit';
-import { ConnectButton, useWallet } from "@suiet/wallet-kit";
-import { getTokenBalance } from "../sui/getBalance.ts";
-import { mockMessages } from "../mock/messages.ts";
+
+import logoImage from "../assets/logo.png";
+import courtBgImage from "../assets/Court_bg.jpg";
+
+import { ConnectButton /*useWallet*/ } from "@suiet/wallet-kit";
 import { deepseek } from "../api/deepseekApi.ts";
 import { extractText, extractWinnerName } from "../utils/jsonUtils.ts";
-// import { mintCoin } from "../sui/mintCoin.ts";
+import { useNavigate } from "react-router-dom";
 
-const csCoin =
-  "0x8b62526154296b153d8eaff7763af537f2128ab957671c563968fd2d5b44a141::courtroom_simulator_token::COURTROOM_SIMULATOR_TOKEN";
-
-function CourtroomPage() {
+export default function DevCourtroomPage() {
   const navigate = useNavigate();
-
-  // 原先的 messages state 用于存储所有发言
   const [messages, setMessages] = useState<Message[]>([]);
-
-  // 新增：左右证据列表
   const [leftEvidences, setLeftEvidences] = useState<Evidence[]>([]);
   const [rightEvidences, setRightEvidences] = useState<Evidence[]>([]);
+  const [showSummary, setShowSummary] = useState(false);
+  const [showDivider, setShowDivider] = useState(false);
 
-  const [balance, setBalance] = useState<number | undefined>(undefined);
+  // const [balance, setBalance] = useState<number | undefined>(undefined);
 
-  // const currentAccount = useCurrentAccount();
-  // const [open, setOpen] = useState(false);
-  // 使用 suiet wallet kit 的 useWallet hook
-  const wallet = useWallet();
-  const address = wallet.account?.address;
-  const csBalance = async () => {
-    if (address) {
-      try {
-        const coinBalance = await getTokenBalance(address, csCoin);
-        console.log("CS balance:", balance);
-        setBalance(coinBalance);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  };
+  const [leftExpanded, setLeftExpanded] = useState(false);
+  const [rightExpanded, setRightExpanded] = useState(false);
+
   useEffect(() => {
-    if (address) {
-      csBalance();
-    }
-  }, [address]);
-
-  // 在组件挂载时，通过useEffect获取数据
-  useEffect(() => {
-    console.log("useEffect 执行了");
+    console.log("组价挂载!useEffect空依赖执行!开始获取证据及法官与双方消息!");
     (async () => {
       try {
         console.log("Loading...");
@@ -88,11 +60,7 @@ function CourtroomPage() {
       }
     })();
   }, []);
-  // 空依赖数组[]表示仅在组件初次挂载时调用一次
 
-  // 当 InputBox 触发发送时，会调用这个函数
-  // content 即输入框中的文本
-  // 输入框发送“我方”消息
   const handleMyMessageSend = (content: string) => {
     console.log("send message", content);
 
@@ -158,10 +126,6 @@ function CourtroomPage() {
       })
       .catch((err) => console.log(err));
   };
-
-  // 控制“总结”分割线是否显示
-  const [showSummary, setShowSummary] = useState(false);
-  // 新增：总结按钮点击时处理函数（使用 reduce 按顺序拼接）
   const handleSummary = async () => {
     // 按 messages 数组的顺序逐条转换消息
     const summaryPayload = messages.reduce((acc, msg) => {
@@ -209,24 +173,24 @@ function CourtroomPage() {
           return; // 如果返回 null 或空字符串，提前退出
         }
 
-        if (address) {
-          console.log(winner);
-          switch (winner) {
-            case null:
-              console.error(`Received invalid response: ${messageContent}`);
-              break;
-            case "claimantAttorney":
-              console.log("winner: claimantAttorney");
-              // await mintCoin(address, 1e8); // 等待 mintCoin 执行完成
-              break;
-            case "defendantAttorney":
-              console.log("winner: defendantAttorney");
-              // await mintCoin(address, 10 * 1e8); // 等待 mintCoin 执行完成
-              break;
-          }
+        // if (address) {
+        console.log(winner);
+        switch (winner) {
+          case null:
+            console.error(`Received invalid response: ${messageContent}`);
+            break;
+          case "claimantAttorney":
+            console.log("winner: claimantAttorney");
+            // await mintCoin(address, 1e8); // 等待 mintCoin 执行完成
+            break;
+          case "defendantAttorney":
+            console.log("winner: defendantAttorney");
+            // await mintCoin(address, 10 * 1e8); // 等待 mintCoin 执行完成
+            break;
+          // }
 
           // 在 mintCoin 成功后再执行 csBalance
-          await csBalance(); // 确保 mintCoin 成功后再调用 csBalance
+          // await csBalance(); // 确保 mintCoin 成功后再调用 csBalance
         }
 
         const newMessage: Message = {
@@ -269,35 +233,6 @@ function CourtroomPage() {
     setMessages((prev) => [...prev, dividerMsg]);
     setShowSummary(true);
   };
-
-  // 用于检测上一次的账户状态
-  const prevAccountRef = useRef(wallet.account);
-
-  // 当钱包断开连接时跳转到指定页面
-  //   useEffect(() => {
-  //     if (!wallet.connected) {
-  //       // 当断开连接时，跳转到例如 /disconnected 页面
-  //       navigate("/");
-  //     }
-  //   }, [wallet.connected, navigate]);
-
-  // 当钱包账户发生变化时跳转
-  useEffect(() => {
-    if (
-      prevAccountRef.current && // 如果之前存在账户
-      wallet.account && // 当前有账户
-      wallet.account.address !== prevAccountRef.current.address
-    ) {
-      // 账户发生切换，跳转到其他页面
-      navigate("/");
-    }
-    // 更新上一次账户
-    prevAccountRef.current = wallet.account;
-  }, [wallet.account, navigate]);
-
-  // 控制“质证结束”分割线是否显示
-  const [showDivider, setShowDivider] = useState(false);
-
   // 点击后显示分割线，并让按钮失效
   const handleEndProof = () => {
     const dividerMsg: Message = {
@@ -309,76 +244,148 @@ function CourtroomPage() {
     setMessages((prev) => [...prev, dividerMsg]);
     setShowDivider(true); // 或根据你的需求，不再需要 showDivider 状态控制按钮
   };
-
   return (
     <div className="app-container">
-      {/* 左侧证据区 */}
-      <div className="left-panel">
-        {leftEvidences.map((ev) => (
-          <EvidenceItem key={ev.id} text={ev.title} backgroundColor="#6666ff" />
-        ))}
-      </div>
-
-      {/* 中间区域：消息展示区 + 固定底部的输入区和按钮 */}
-      <div className="middle-panel">
-        {/* 消息展示区 */}
-        <div className="messages-container">
-          {messages.map((msg) => {
-            if (msg.user === "divider") {
-              return <Divider key={msg.id} text={msg.text} />;
-            }
-            return (
-              <SpeechBlock
-                key={msg.id}
-                role={msg.user as "judge" | "opponent" | "mine"}
-                color={
-                  msg.user === "judge"
-                    ? "#FF6666"
-                    : msg.user === "opponent"
-                    ? "#66B0FF"
-                    : "#FFFF88"
-                }
-                text={msg.text}
-              />
-            );
-          })}
+      <div className="header">
+        <div
+          className="logo"
+          onClick={() => navigate("/")}
+          style={{ cursor: "default" }}
+        >
+          <img src={logoImage} alt="" />
+          <p>Courtroom Simulator</p>
         </div>
-        {/* 固定底部：输入框和按钮 */}
-        <div className="chat-footer">
-          <InputBox onSend={handleMyMessageSend} />
-          <div className="buttons">
-            <button onClick={handleEndProof} disabled={showDivider}>
-              Conclude the Cross - Examination
-            </button>
-            <button onClick={handleSummary} disabled={showSummary}>
-              Pronounce
-            </button>
-          </div>
+        {/* ConnectButton 固定在右上角 */}
+        <div className="connect-button">
+          <ConnectButton
+            onConnectError={(error) => {
+              console.error("Connect error: ", error);
+            }}
+          />
+          {/* {balance !== null && (
+            <div style={{ marginTop: "20px" }}>
+              <h3>CS Balance: {balance?.toFixed(9)}</h3>
+            </div>
+          )} */}
         </div>
       </div>
+      <div className="main" style={{ backgroundImage: `url(${courtBgImage})` }}>
+        {/* 左侧证据区 */}
+        <div className="left-panel">
+          {leftExpanded ? (
+            <>
+              <button
+                className="toggle-button toggle-up"
+                onClick={() => setLeftExpanded(false)}
+              >
+                <FaChevronUp />
+              </button>
+              {leftEvidences.map((ev) => (
+                <EvidenceItem
+                  key={ev.id}
+                  text={ev.title}
+                  backgroundColor="rgba(230, 162, 60, 0.85)"
+                />
+              ))}
+            </>
+          ) : (
+            <>
+              {leftEvidences.slice(0, 1).map((ev) => (
+                <EvidenceItem
+                  key={ev.id}
+                  text={ev.title}
+                  backgroundColor="rgba(230, 162, 60, 0.85)"
+                />
+              ))}
+              {leftEvidences.length > 1 && (
+                <button
+                  className="toggle-button toggle-down"
+                  onClick={() => setLeftExpanded(true)}
+                >
+                  <FaChevronDown />
+                </button>
+              )}
+            </>
+          )}
+        </div>
 
-      {/* 右侧证据区 */}
-      <div className="right-panel">
-        {rightEvidences.map((ev) => (
-          <EvidenceItem key={ev.id} text={ev.title} backgroundColor="#ff9966" />
-        ))}
-      </div>
-
-      {/* ConnectButton 固定在右上角 */}
-      <div className="connect-button">
-        <ConnectButton
-          onConnectError={(error) => {
-            console.error("Connect error: ", error);
-          }}
-        />
-        {balance !== null && (
-          <div style={{ marginTop: "20px" }}>
-            <h3>CS Balance: {balance?.toFixed(9)}</h3>
+        {/* 中间区域：消息展示区 + 固定底部的输入区和按钮 */}
+        <div className="middle-panel">
+          {/* 消息展示区 */}
+          <div className="messages-container">
+            {messages.map((msg) => {
+              if (msg.user === "divider") {
+                return <Divider key={msg.id} text={msg.text} />;
+              }
+              return (
+                <SpeechBlock
+                  key={msg.id}
+                  role={msg.user as "judge" | "opponent" | "mine"}
+                  color={
+                    msg.user === "judge"
+                      ? "rgba(165, 42, 42, 0.85)"
+                      : msg.user === "opponent"
+                      ? "rgba(230, 162, 60, 0.85)"
+                      : "rgba(255, 248, 220, 0.9)"
+                  }
+                  text={msg.text}
+                />
+              );
+            })}
           </div>
-        )}
+          {/* 固定底部：输入框和按钮 */}
+          <div className="chat-footer">
+            <InputBox onSend={handleMyMessageSend} />
+            <div className="buttons">
+              <button onClick={handleEndProof} disabled={showDivider}>
+                Conclude the Cross - Examination
+              </button>
+              <button onClick={handleSummary} disabled={showSummary}>
+                Pronounce
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* 右侧证据区 */}
+        <div className="right-panel">
+          {rightExpanded ? (
+            <>
+              <button
+                className="toggle-button toggle-up"
+                onClick={() => setRightExpanded(false)}
+              >
+                <FaChevronUp />
+              </button>
+              {rightEvidences.map((ev) => (
+                <EvidenceItem
+                  key={ev.id}
+                  text={ev.title}
+                  backgroundColor="rgba(165, 42, 42, 0.85)"
+                />
+              ))}
+            </>
+          ) : (
+            <>
+              {rightEvidences.slice(0, 1).map((ev) => (
+                <EvidenceItem
+                  key={ev.id}
+                  text={ev.title}
+                  backgroundColor="rgba(165, 42, 42, 0.85)"
+                />
+              ))}
+              {rightEvidences.length > 1 && (
+                <button
+                  className="toggle-button toggle-down"
+                  onClick={() => setRightExpanded(true)}
+                >
+                  <FaChevronDown />
+                </button>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
 }
-
-export default CourtroomPage;
